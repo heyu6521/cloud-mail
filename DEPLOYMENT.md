@@ -19,17 +19,16 @@ Runtime variables committed in `mail-worker/wrangler.toml` are limited to non-se
 
 ## Build and deploy
 
-Cloudflare Workers Builds should use:
+The checked-in `.github/workflows/deploy-cloudflare.yml` deploys pushes to `main` that change `mail-worker/**` or `mail-vue/**`. It uses the production `mail-worker/wrangler.toml` directly and does not copy `jwt_secret` into GitHub.
 
-- Repository: `heyu6521/cloud-mail`
-- Production branch: `main`
-- Root directory: `mail-worker`
-- Build command: leave empty (Wrangler runs the configured build hook)
-- Deploy command: `pnpm run deploy`
+GitHub Actions requires:
+
+- Repository secret `CLOUDFLARE_API_TOKEN`: a scoped Cloudflare user API token with Workers Scripts edit, Workers Routes edit for `heyuspace.com`, D1 edit, KV edit, and Workers AI access as required by the deployment.
+- Repository variable `CLOUDFLARE_ACCOUNT_ID`: the target Cloudflare account ID.
 
 For an authenticated command-line deployment, run `pnpm install` and `pnpm run deploy` from `mail-worker`. The configured build hook installs and builds `../mail-vue` before Wrangler uploads the Worker and static assets.
 
-Database initialization and upgrades are implemented by the current source at `/api/init/:secret`. Invoke that endpoint without logging or exposing the secret. A successful run returns `success`; users, including the administrator, set their password through the website registration flow.
+Database initialization and upgrades are implemented by the current source at `/api/init/:secret`. Invoke that endpoint without logging or exposing the secret. A successful run returns `success`; users, including the administrator, set their password through the website registration flow. The GitHub workflow deliberately does not receive the JWT secret, so run initialization separately when an upstream update adds database changes.
 
 ## Upgrades, backup, and rollback
 
