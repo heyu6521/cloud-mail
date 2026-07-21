@@ -46,7 +46,7 @@ crons = ["0 16 * * *"]
 #analysis_cache = false
 #orm_log = false
 domain = ["heyuspace.com"]
-admin = "admin@heyuspace.com"
+admin = "heyu@heyuspace.com"
 # jwt_secret is stored as a Cloudflare Worker Secret and is never committed.
 
 [build]
